@@ -30,7 +30,7 @@ jobs:
         run: dotnet --version
       
       - name: Build
-        run: dotnet --version
+        run: dotnet --versio
       
       # Optionally, run tests or other tasks here.
       
@@ -45,7 +45,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C073PTSS7FE'
-          slack-message: "Deployment of BSMAAU  project is successful : ${{ github.event.time }}"
+          slack-message: "Deployment of BSMAAU project is successful at ${{ github.event.time }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
 
@@ -54,7 +54,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C073PTSS7FE'
-          slack-message: "Deployment of BSMAAU  project failed : ${{ github.event.time }}"
+          slack-message: "Deployment of BSMAAU  project failed  ${{ github.event.time }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
 
