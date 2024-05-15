@@ -30,7 +30,7 @@ jobs:
         run: dotnet --version
       
       - name: Build
-        run: dotnet --version
+        run: dotnet --versio
       
       # Optionally, run tests or other tasks here.
       
@@ -48,7 +48,7 @@ jobs:
           update-ts: ${{ steps.slack-start.outputs.ts }}
           payload: |
             {
-              "text": "Deployment finished with (${{ job.status }})",
+              "text": "Deployment of BSMAAU  project has finished with (${{ job.status }})",
               "attachments": [
                 {
                   "color": "#FF0000",
@@ -72,7 +72,7 @@ jobs:
           update-ts: ${{ steps.slack-start.outputs.ts }}
           payload: |
             {
-              "text": "Deployment finished with (${{ job.status }})",
+              "text": "Deployment of BSMAAU  project has finished with (${{ job.status }})",
               "attachments": [
                 {
                   "color": "28a745",
