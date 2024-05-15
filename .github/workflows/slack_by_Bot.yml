@@ -10,11 +10,11 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Post to a Slack channel
-        id: slack
+        id: slack-start
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C073PTSS7FE'
-          slack-message: "GitHub build result: ${{ job.status }}\n${{ github.event.head_commit.url }}"
+          slack-message: "Build & Deployment start : ${{ github.event.time }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
 
@@ -24,7 +24,7 @@ jobs:
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '8.0' # Use .NET Core 8
+          dotnet-version: '8.0'
       
       - name: Restore dependencies
         run: dotnet --version
@@ -45,7 +45,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C073PTSS7FE'
-          slack-message: 'Deployment of BSMAAU web project was successful at ${{ github.event.time }}.'
+          slack-message: "Deployment of BSMAAU  project is successful : ${{ github.event.time }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
 
@@ -54,7 +54,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C073PTSS7FE'
-          slack-message: 'Deployment of BSMAAU web project failed at ${{ github.event.time }}.'
+          slack-message: "Deployment of BSMAAU  project failed : ${{ github.event.time }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
 
@@ -62,19 +62,18 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: "C073PTSS7FE"
-          update-ts: ${{ steps.slack_start.outputs.ts }}
+          update-ts: ${{ steps.slack-start.outputs.ts }}
           payload: |
             {
-              "text": "Deployment finished (Completed)",
+              "text": "Deployment finished with (${{ job.status }})",
               "attachments": [
                 {
-                  "pretext": "Deployment finished",
                   "color": "28a745",
                   "fields": [
                     {
                       "title": "Status",
                       "short": true,
-                      "value": "Completed"
+                      "value": "${{ job.status }}"
                     }
                   ]
                 }
