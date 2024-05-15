@@ -1,0 +1,99 @@
+name: Build and Deploy .NET Core Project
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  build_and_deploy:
+    name: 'Build and Deploy'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - id: slack_start
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: "C073PTSS7FE"
+          payload: |
+            {
+              "text": "Deployment started (In Progress)",
+              "attachments": [
+                {
+                  "pretext": "Deployment started",
+                  "color": "dbab09",
+                  "fields": [
+                    {
+                      "title": "Status",
+                      "short": true,
+                      "value": "In Progress"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.0' # Use .NET Core 8
+      
+      - name: Restore dependencies
+        run: dotnet --version
+      
+      - name: Build
+        run: dotnet --version
+      
+      # Optionally, run tests or other tasks here.
+      
+      - name: Deploy
+        run: |
+          # Add your deployment script commands here to deploy to 192.168.10.20/apiDemo
+
+      # Other steps here...
+
+      - name: Notify Slack on success
+        if: success()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          status: 'success'
+          message: 'Deployment of BSMAAU web project was successful at ${{ github.event.time }}.'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
+
+      - name: Notify Slack on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          status: 'failure'
+          message: 'Deployment of BSMAAU web project failed at ${{ github.event.time }}.'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
+
+      - id: slack_end
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: "C073PTSS7FE"
+          update-ts: ${{ steps.slack_start.outputs.ts }}
+          payload: |
+            {
+              "text": "Deployment finished (Completed)",
+              "attachments": [
+                {
+                  "pretext": "Deployment finished",
+                  "color": "28a745",
+                  "fields": [
+                    {
+                      "title": "Status",
+                      "short": true,
+                      "value": "Completed"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
