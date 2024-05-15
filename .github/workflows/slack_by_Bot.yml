@@ -14,7 +14,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C073PTSS7FE'
-          slack-message: "Build & Deployment start : ${{ github.event.time }}"
+          slack-message: "Build & Deployment start  ${{ github.event.time }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
 
@@ -30,7 +30,7 @@ jobs:
         run: dotnet --version
       
       - name: Build
-        run: dotnet --versio
+        run: dotnet --version
       
       # Optionally, run tests or other tasks here.
       
@@ -39,22 +39,29 @@ jobs:
           # Add your deployment script commands here to deploy to 192.168.10.20/apiDemo
 
       # Other steps here...
-
-      - name: Notify Slack on success
-        if: success()
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          channel-id: 'C073PTSS7FE'
-          slack-message: "Deployment of BSMAAU project is successful at ${{ github.event.time }}"
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
-
+      
       - name: Notify Slack on failure
         if: failure()
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C073PTSS7FE'
-          slack-message: "Deployment of BSMAAU  project failed  ${{ github.event.time }}"
+          update-ts: ${{ steps.slack-start.outputs.ts }}
+          payload: |
+            {
+              "text": "Deployment finished with (${{ job.status }})",
+              "attachments": [
+                {
+                  "color": "#FF0000",
+                  "fields": [
+                    {
+                      "title": "Status",
+                      "short": false,
+                      "value": "Error"
+                    }
+                  ]
+                }
+              ]
+            }
         env:
           SLACK_BOT_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
 
@@ -73,7 +80,7 @@ jobs:
                     {
                       "title": "Status",
                       "short": true,
-                      "value": "${{ job.status }}"
+                      "value": "Completed"
                     }
                   ]
                 }
