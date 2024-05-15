@@ -1,4 +1,4 @@
-name: Build and Deploy .NET Core Project
+name: Build and Deploy  Project
 
 on:
   workflow_dispatch:
@@ -15,13 +15,14 @@ jobs:
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '8.0' # Use .NET Core 8
+          dotnet-version: '8.0' 
       
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet --version
       
       - name: Build
-        run: dotnet build --configuration Release
+        #run: dotnet build --configuration Release
+        run : dotnet --version
       
       # Optionally, run tests or other tasks here.
       
@@ -34,7 +35,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         with:
           status: 'success'
-          message: 'The deployment of .NET Core project version 8 to 192.168.10.20/apiDemo was successful.'
+          message: 'Deployment of BSMAAU web project was successful at ${{ github.event.time }}.'
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_NOTIFICATIONS_WEB_HOOK_URL }}
 
