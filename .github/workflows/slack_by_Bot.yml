@@ -45,7 +45,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C073PTSS7FE'
-          stack-message: 'Deployment of BSMAAU web project was successful at ${{ github.event.time }}.'
+          slack-message: 'Deployment of BSMAAU web project was successful at ${{ github.event.time }}.'
         env:
           SLACK_BOT_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
 
@@ -54,7 +54,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C073PTSS7FE'
-          stack-message: 'Deployment of BSMAAU web project failed at ${{ github.event.time }}.'
+          slack-message: 'Deployment of BSMAAU web project failed at ${{ github.event.time }}.'
         env:
           SLACK_BOT_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
 
