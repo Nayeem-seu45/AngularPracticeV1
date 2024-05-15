@@ -1,50 +1,49 @@
-name: Notification
+name: Build and Deploy .NET Core Project
 
 on:
   workflow_dispatch:
+  
 jobs:
-  slackNotification:
-    name: 'Deployment'
+  build_and_deploy:
+    name: 'Build and Deploy'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
-      # - name: Deploy
-      #   run: deploy.sh
-      # [...]
-
-      - name: notify slack
-        id: slack
-        uses: slackapi/slack-github-action@v1.24.0
-        # https://api.slack.com/apps/<your-app-id>/incoming-webhooks
-        if: always()
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1
         with:
-          channel-id: 'C073PTSS7FE' # slack channel #alerts-test
-          payload: |
-            {
-              "text": "GitHub Action failed",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Production deployment check failed* :fire_engine:\n High error rate detected after deployment! Rolling back..."
-                  }
-                },
-                {
-                  "type": "actions",
-                  "elements": [
-                    {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": "github: sucess action"
-                      },
-                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                    }
-                  ]
-                }
-              ]
-            }
+          dotnet-version: '8.0' # Use .NET Core 8
+      
+      - name: Restore dependencies
+        run: dotnet restore
+      
+      - name: Build
+        run: dotnet build --configuration Release
+      
+      # Optionally, run tests or other tasks here.
+      
+      - name: Deploy
+        run: |
+          # Add your deployment script commands here to deploy to 192.168.10.20/apiDemo
+
+      - name: Notify Slack on success
+        if: success()
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          status: 'success'
+          message: 'The deployment of .NET Core project version 8 to 192.168.10.20/apiDemo was successful.'
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_WEB_HOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          SLACK_WEBHOOK: ${{ secrets.SLACK_NOTIFICATIONS_WEB_HOOK_URL }}
+
+      - name: Notify Slack on failure
+        if: failure()
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          status: 'failure'
+          message: 'The deployment of .NET Core project version 8 to 192.168.10.20/apiDemo failed.'
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_NOTIFICATIONS_WEB_HOOK_URL }}
+
